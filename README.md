@@ -191,7 +191,7 @@ advanced-hybrid-rag/
 
 ```bash
 # Clone and enter repository
-git clone https://github.com/<your-username>/advanced-hybrid-rag.git
+git clone https://github.com/Coder-0X/advanced-hybrid-rag.git
 cd advanced-hybrid-rag
 
 # Create virtual environment
