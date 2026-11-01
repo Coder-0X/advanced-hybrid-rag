@@ -1,211 +1,240 @@
-# Advanced Hybrid RAG Engine with Quantitative Benchmarking
+# Advanced Hybrid RAG Engine: Production Architecture & Cranfield Evaluation
 
 [![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.161%2B-009688.svg)](https://fastapi.tiangolo.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115%2B-009688.svg)](https://fastapi.tiangolo.com/)
 [![Qdrant](https://img.shields.io/badge/Vector%20Store-Qdrant-dc2626.svg)](https://qdrant.tech/)
-[![BM25](https://img.shields.io/badge/Sparse%20IR-Okapi%20BM25Plus-amber.svg)](https://en.wikipedia.org/wiki/Okapi_BM25)
+[![Inverted Index](https://img.shields.io/badge/Sparse%20IR-BM25Plus%20Inverted%20Index-amber.svg)](https://en.wikipedia.org/wiki/Okapi_BM25)
 [![Reranker](https://img.shields.io/badge/Reranker-Cross--Encoder-purple.svg)](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2)
-[![Evaluation](https://img.shields.io/badge/Evaluation-105%20Queries%20Benchmark-success.svg)](https://github.com/explodinggradients/ragas)
+[![Evaluation](https://img.shields.io/badge/Benchmark-105%20Cranfield%20Queries-success.svg)](data/testset/)
+[![Significance](https://img.shields.io/badge/Significance-Wilcoxon%20%26%20Fisher%20Permutation-blueviolet.svg)](app/evaluation/significance.py)
 
-A production-grade Information Retrieval (IR) and Retrieval-Augmented Generation (RAG) engine that solves semantic drift, vocabulary mismatch, and table fragmentation through **Layout-Aware Document Ingestion**, **Hybrid Search** (Dense Vector Embeddings + Sparse BM25 via Cormack Reciprocal Rank Fusion), and a **Cross-Encoder Reranker**, backed by an **Automated 105-Query Quantitative Evaluation Benchmark Suite**.
+A research-grade Information Retrieval (IR) and Retrieval-Augmented Generation (RAG) system engineered to solve semantic drift, vocabulary mismatch, table fragmentation, and hallucination. 
 
----
-
-## 🌟 Why This Architecture?
-
-| Retrieval Strategy | Strength | Vulnerability |
-| :--- | :--- | :--- |
-| **Naive RAG (Dense Only)** | High conceptual & semantic recall; understands synonyms. | Prone to false positives; misses exact keywords, serial numbers, symbols, and code identifiers. |
-| **Sparse BM25** | High lexical precision; exact keyword matching; term frequency saturation. | Blind to synonyms, paraphrase, semantic context, and cross-lingual meaning. |
-| **Hybrid (RRF Fusion)** | Combines semantic vectors with lexical tokens via rank-invariant fusion. | Candidates may still include semantic distractors with high surface overlap. |
-| **Reranked Hybrid** | Evaluates full token-level query-passage cross-attention; eliminates distractors. | Modest latency trade-off (~450ms on CPU) for near-zero hallucination. |
+Built from first principles with **Layout-Aware Document Parsing**, a **Custom Sparse Inverted Index** implementing BM25+ ($k_1=1.5, b=0.75, \delta=1.0$), **Dense Semantic Search** via HNSW Qdrant embeddings, **Cormack Reciprocal Rank Fusion (RRF)**, and **Cross-Encoder Cross-Attention Reranking**. Validated via a 105-query Cranfield benchmark suite featuring **Graded NDCG@10**, **Cranfield MAP@10**, **Paired Wilcoxon Signed-Rank Tests**, and **Fisher's Paired Randomization Tests** ($B=10,000$).
 
 ---
 
-## 🏗️ Architecture Pipeline
+## 🌟 Architectural Overview
 
 ```mermaid
 flowchart TD
-    RawDoc["Raw Document\n(PDF / Markdown / SEC 10-K)"] --> LayoutParser["Layout-Aware Ingestion\n(Headers, Markdown Tables, Lists, Breadcrumbs)"]
-    LayoutParser --> TableSchema["Table Schema & Row Linearization\n(Repeats headers, embeds schema)"]
-    TableSchema --> Chunks["Enriched Document Chunks"]
+    RawDoc["Raw Semi-Structured Documents\n(SEC 10-Ks, RFCs, Papers)"] --> LayoutParser["Layout-Aware Ingestion Pipeline\n(Headers, Tables, Lists, Code, Paragraphs)"]
+    LayoutParser --> TableEngine["Table Schema Preservation & Row Linearization\n(Duplicate headers across splits, entity-value tuples)"]
+    TableEngine --> Chunks["Enriched Document Chunks with Breadcrumbs"]
     
-    Chunks --> Embed["Dense Embedder\n(SentenceTransformers all-MiniLM-L6-v2)"]
-    Chunks --> Tokenize["Sparse Tokenizer\n(Alphanumeric + Stopword Filter)"]
+    Chunks --> DenseStore["Dense Vector Store\n(Qdrant HNSW + all-MiniLM-L6-v2)"]
+    Chunks --> SparseIndex["First-Principles Inverted Index\n(Posting Lists, DF table, BM25+ delta=1.0)"]
     
-    Embed --> Qdrant["Qdrant Vector Store\n(Cosine Distance Top-K)"]
-    Tokenize --> BM25["BM25 Index\n(BM25Plus TF-IDF Top-K)"]
+    UserQuery["User Information Need / Query"] --> DenseStore
+    UserQuery --> SparseIndex
     
-    UserQuery["User Query"] --> Qdrant
-    UserQuery --> BM25
+    DenseStore --> RRF["Reciprocal Rank Fusion (Cormack et al., SIGIR 2009)\nRRF(d) = sum w_m / (60 + r_m(d))"]
+    SparseIndex --> RRF
     
-    Qdrant --> RRF["Reciprocal Rank Fusion (RRF)\nRRF_score(d) = sum(w / (k + rank(d)))"]
-    BM25 --> RRF
+    RRF --> Candidates["Top-15 Candidate Pool"]
+    UserQuery --> CrossEncoder["Cross-Encoder Reranker\n(ms-marco-MiniLM-L-6-v2 Full Cross-Attention)"]
+    Candidates --> CrossEncoder
     
-    RRF --> Candidates["Top Candidate Pool (Top-15 Chunks)"]
-    UserQuery --> CrossEnc["Cross-Encoder Reranker\n(ms-marco-MiniLM-L-6-v2)"]
-    Candidates --> CrossEnc
-    
-    CrossEnc --> TopK["Final Filtered Top-K Chunks"]
-    TopK --> Generator["Grounded Generator\n(Citation Verification & Faithfulness)"]
-    Generator --> Response["Answer with Citations + Latency Telemetry"]
+    CrossEncoder --> TopK["Top-K Filtered Passages"]
+    TopK --> Generator["Grounded Synthesis Engine\n(Reference-based ROUGE-L / Token F1 Verification)"]
+    Generator --> Response["Synthesized Answer with Citations & Latency Telemetry"]
 ```
 
 ---
 
-## 📐 Mathematical Fundamentals
+## 📐 Mathematical Formulation
 
-### 1. Cormack Reciprocal Rank Fusion (RRF)
-Unlike simple linear score addition, which fails because dense cosine scores $[0, 1]$ and BM25 unbounded scores $[0, \infty)$ have incompatible distributions, **Reciprocal Rank Fusion** operates purely on monotonic positional ranks:
+### 1. First-Principles BM25+ Sparse Retrieval
+Standard Okapi BM25 penalizes long documents excessively, causing term frequency saturation where documents containing valid query terms receive scores close to zero. We implement **BM25+** (Lv & Zhai, 2011) with lower-bound parameter $\delta = 1.0$:
 
-$$RRF\_Score(d) = \sum_{m \in \{\text{dense}, \text{sparse}\}} \frac{w_m}{k + \text{rank}_m(d)}$$
+$$\text{Score}_{\text{BM25+}}(D, Q) = \sum_{t \in Q} \text{IDF}(t) \cdot \left[ \frac{\text{TF}(t, D) \cdot (k_1 + 1)}{\text{TF}(t, D) + k_1 \cdot \left(1 - b + b \cdot \frac{|D|}{\text{avgdl}}\right)} + \delta \right]$$
 
-- $k = 60$: Cormack et al. smoothing constant preventing top ranks from disproportionately drowning out lower ranks.
-- $w_{\text{dense}}, w_{\text{sparse}}$: Relative system weighting (default $0.5 / 0.5$).
-- $\text{rank}_m(d)$: 1-indexed position of document $d$ in system $m$.
+Where:
+- $k_1 = 1.5$ (term frequency scaling parameter)
+- $b = 0.75$ (document length normalization factor)
+- $\delta = 1.0$ (lower-bound floor guaranteeing non-negative contribution for matched terms)
+- Robertson-Spärck Jones IDF with Robertson-Zaragoza smoothing:
+  $$\text{IDF}(t) = \ln\left(1 + \frac{N - n(t) + 0.5}{n(t) + 0.5}\right)$$
 
-### 2. Cross-Encoder Full Cross-Attention
-- **Bi-Encoders** compress query $q$ and passage $p$ into isolated vectors $\vec{u}, \vec{v}$: $\text{sim}(q, p) = \cos(\vec{u}, \vec{v})$. Tokens never interact during transformer encoding.
-- **Cross-Encoders** concatenate the sequence: $[\text{CLS}] \circ q \circ [\text{SEP}] \circ p \circ [\text{SEP}]$ through transformer self-attention layers:
+### 2. Cormack Reciprocal Rank Fusion (RRF)
+Directly adding dense cosine similarity scores $\in [-1, 1]$ and sparse BM25 scores $\in [0, \infty)$ fails due to disparate, uncalibrated score distributions. We apply **Reciprocal Rank Fusion** (Cormack, Clarke & Büttcher, SIGIR 2009):
 
-$$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^T}{\sqrt{d_k}}\right)V$$
+$$\text{RRF}(d) = \sum_{m \in \{\text{Dense}, \text{BM25}\}} \frac{w_m}{k + r_m(d)}$$
 
-Every query token directly attends to every document token, filtering out semantic distractors and false positives.
+Where $k = 60$ is the Cormack smoothing constant, $r_m(d)$ is the 1-indexed rank of document $d$ in retrieval modality $m$, and $w_m$ is the modality weight ($w_d = 0.5, w_s = 0.5$).
 
-### 3. Layout-Aware Ingestion & Table Normalization
-Standard chunkers fragment tables into disjoint strings, stripping column headers from data rows. The **Layout-Aware Document Processor**:
-1. Maintains an active section hierarchy stack (`# H1 > ## H2 > ### H3`) and prepends breadcrumb context to chunks.
-2. Identifies tabular structures, preventing mid-row splitting.
-3. Propagates table header schemas to all sub-table chunks if row counts exceed chunk capacity.
-4. Generates row-level semantic linearizations so dense bi-encoders can match natural-language queries against numeric cells.
+### 3. Cross-Encoder Cross-Attention Reranking
+While bi-encoders produce static sentence embeddings independently ($\mathbf{e}_q = f(q), \mathbf{e}_d = f(d)$), the cross-encoder feeds both sequences concatenated through all transformer layers simultaneously:
+
+$$s(q, d) = \sigma\left(\mathbf{W} \cdot \text{Transformer}(\text{[CLS]} \circ q \circ \text{[SEP]} \circ d \circ \text{[SEP]})\right)$$
+
+This captures fine-grained, word-level cross-attention interactions that bi-encoders miss.
 
 ---
 
-## 📊 Empirical Evaluation Benchmark ($N=105$ Queries)
+## 📊 Quantitative Benchmark Results (105-Query Cranfield Evaluation)
 
-The automated benchmark suite tests **105 ground-truth query-context-answer triples** over **15 heterogeneous technical and financial documents** across 315 total retrieval passes.
+Evaluation executed across **15 multi-domain technical documents** and **105 ground-truth queries** (315 evaluation passes) spanning 5 retrieval archetypes: Lexical Exact ($N=25$), Semantic Paraphrase ($N=25$), Tabular Quantitative ($N=25$), Adversarial Distractors ($N=15$), and Multi-Hop Synthesis ($N=15$).
 
-### 1. Overall Comparative Results Matrix
+### Benchmark Results Matrix
 
-| Metric | Naive RAG (Dense) | Hybrid RAG (Dense + BM25) | Reranked RAG (Cross-Encoder) | Hybrid Delta | Reranked Delta |
+| Evaluation Metric | Naive RAG (Dense) | Hybrid (Dense + BM25+) | Reranked (Cross-Encoder) | Hybrid Δ | Reranked Δ |
 | :--- | :---: | :---: | :---: | :---: | :---: |
-| **Context Precision** | 0.780 | 0.814 | **0.865** | +0.034 | **+0.085** |
-| **MRR (Mean Recip. Rank)** | 0.785 | 0.816 | **0.869** | +0.031 | **+0.083** |
+| **Context Precision@5** | 0.780 | 0.825 | **0.865** | +0.045 | **+0.085\*** |
+| **Graded NDCG@10** | 0.878 | 0.877 | **0.892** | -0.001 | **+0.013** |
+| **Cranfield MAP@10** | 0.694 | 0.687 | **0.731** | -0.006 | **+0.037** |
+| **Mean Reciprocal Rank (MRR)** | 0.785 | 0.829 | **0.869** | +0.043 | **+0.083\*** |
 | **Context Recall** | 0.968 | 0.978 | **0.981** | +0.009 | **+0.013** |
 | **Hit Rate@5** | 0.971 | 0.981 | **0.981** | +0.010 | **+0.010** |
-| **Faithfulness** | 1.000 | 1.000 | **1.000** | 0.000 | 0.000 |
-| **Answer Relevancy** | 0.617 | 0.629 | **0.633** | +0.012 | **+0.017** |
-| **Median Latency (P50)** | 12.9 ms | 12.5 ms | 467.6 ms | -0.4 ms | +454.7 ms |
-| **Latency P95** | 15.9 ms | 15.0 ms | 661.3 ms | - | - |
+| **ROUGE-L F1** | 0.106 | 0.102 | **0.103** | -0.004 | **-0.003** |
+| **Token F1** | 0.125 | 0.120 | **0.122** | -0.005 | **-0.004** |
+| **Latency P50 (Median)** | 36.1 ms | 27.7 ms | 937.4 ms | -8.4ms | +901.3ms |
+| **Latency P95** | 339.3 ms | 158.1 ms | 3375.4 ms | - | - |
+
+*\*Statistically significant at $\alpha = 0.05$ after Holm-Bonferroni correction.*
+
+### Query Archetype Ablation Breakdown (MRR@5 & Hit Rate)
+
+| Query Category | Count | Naive MRR | Hybrid MRR | Reranked MRR | NDCG@10 (Rerank) | Hit Rate (Rerank) |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Adversarial Distractor** | 15 | 0.833 | 0.889 | **0.956** | 1.000 | 100.0% |
+| **Lexical Exact** | 25 | 0.933 | 0.953 | **0.973** | 0.868 | 100.0% |
+| **Semantic Paraphrase** | 25 | 0.657 | 0.710 | **0.808** | 0.852 | 96.0% |
+| **Multi-Hop Synthesis** | 15 | 0.867 | 0.867 | **0.900** | 0.834 | 93.3% |
+| **Tabular Quantitative** | 25 | 0.688 | 0.763 | **0.753** | 0.925 | 100.0% |
+
+### Non-Parametric Statistical Significance Tests (Reranked vs. Naive Baseline)
+
+| Metric Tested | Paired Wilcoxon Stat | Wilcoxon p-value | Fisher Randomization Perm. p-value ($B=5000$) | Significant ($\alpha=0.05$)? |
+| :--- | :---: | :---: | :---: | :---: |
+| **Context Precision@5** | 68.00 | **0.000303** | **0.001000** | **YES ($p < 0.05$)** |
+| **Mean Reciprocal Rank (MRR)** | 46.00 | **0.000367** | **0.001400** | **YES ($p < 0.05$)** |
+| **Graded NDCG@10** | 327.00 | 0.177875 | 0.124575 | Null not rejected |
+| **Cranfield MAP@10** | 236.50 | 0.079987 | 0.043591 | Marginal ($p \approx 0.04-0.07$) |
 
 ---
 
-### 2. Archetype Breakdown: Ablation Across Query Categories
+## 📈 Publication Figures
 
-| Query Category | Query Count | Naive MRR | Hybrid MRR | Reranked MRR | Hit Rate (Reranked) | Primary Failure Mode Addressed |
-| :--- | :---: | :---: | :---: | :---: | :---: | :--- |
-| **Adversarial Distractor** | 15 | 0.833 | 0.856 | **0.956** | **100.0%** | Bi-encoder false positives on misleading surface keywords. |
-| **Lexical Exact** | 25 | 0.933 | 0.953 | **0.973** | **100.0%** | Dense vector drift on code identifiers, formulas, and exact constants. |
-| **Semantic Paraphrase** | 25 | 0.657 | 0.683 | **0.808** | **96.0%** | BM25 zero-matching on abstract, conceptual restatements. |
-| **Synthesis Multi-Hop** | 15 | 0.867 | 0.867 | **0.900** | **93.3%** | Dispersed clues across multiple distinct document sections. |
-| **Tabular Quantitative** | 25 | 0.688 | **0.757** | **0.753** | **100.0%** | Table row fragmentation and column header loss in chunking. |
+The evaluation suite automatically renders publication-grade figures in IEEE/ACM style:
+
+- `reports/figures/pareto_frontier.png`: Precision vs. P95 latency Pareto frontier illustrating the operational trade-off between Hybrid RRF (ultra-low latency) and Cross-Encoder reranking (maximum precision).
+- `reports/figures/archetype_ablation.png`: Comparative bar chart dissecting performance across the 5 query archetypes.
 
 ---
 
-### 3. Key Empirical Findings
+## 📁 Repository Structure
 
-1. **Elimination of Adversarial False Positives**: On queries with high lexical surface overlap with incorrect passages (e.g. distinguishing Raft heartbeat timers from autoscaling scrape intervals), the Cross-Encoder boosts MRR from **0.833 to 0.956**, proving the necessity of joint query-document token self-attention.
-2. **Dense + Sparse Synergy**: Adding sparse BM25 via Cormack RRF increases **Context Precision from 0.780 to 0.814** at virtually zero latency overhead (12.5ms vs 12.9ms).
-3. **Layout Preservation on Financial Tables**: Ingesting tabular SEC Form 10-K balance sheets with schema preservation and row linearization improved Tabular MRR from **0.688 to 0.757**.
-4. **Systems Trade-off Profiling**: Reranked RAG provides an **8.3% MRR gain** at the cost of a ~450ms CPU latency penalty. In latency-critical workloads, Hybrid RAG offers the optimal Pareto frontier (12.5ms median latency with 0.816 MRR).
+```
+advanced-hybrid-rag/
+├── app/
+│   ├── api/
+│   │   ├── dependencies.py       # FastAPI dependency injection (get_engine)
+│   │   ├── endpoints.py          # REST API endpoints (/documents, /query, /benchmark)
+│   │   └── ui.py                 # Jinja2 template rendering controller
+│   ├── core/
+│   │   ├── bm25_retriever.py     # High-level sparse retriever wrapper
+│   │   ├── document_processor.py # Layout-aware parser, Markdown table linearizer
+│   │   ├── fusion.py             # Cormack Reciprocal Rank Fusion (RRF)
+│   │   ├── generator.py          # Grounded synthesis with citation verification
+│   │   ├── inverted_index.py     # First-principles InvertedIndex (postings, BM25+)
+│   │   ├── pipeline.py           # Unified HybridRAGEngine orchestrator
+│   │   ├── reranker.py           # Cross-Encoder neural reranker
+│   │   └── vector_store.py       # Dense vector store (Qdrant + sentence-transformers)
+│   ├── evaluation/
+│   │   ├── benchmark_runner.py   # Automated 3-mode benchmark runner & reporter
+│   │   ├── data_loader.py        # Cranfield / BEIR dataset loader
+│   │   ├── dataset.py            # Evaluation corpus & query re-exports
+│   │   ├── metrics.py            # NDCG@10, MAP@10, MRR, Context Precision, ROUGE-L
+│   │   ├── significance.py       # Wilcoxon, Fisher's Randomization, Holm-Bonferroni
+│   │   └── visualizer.py         # Matplotlib publication figure generator
+│   ├── models/
+│   │   └── schemas.py            # Pydantic v2 schemas and telemetry models
+│   ├── config.py                 # Pydantic Settings & environment configuration
+│   └── main.py                   # FastAPI app with lifespan state management
+├── data/
+│   ├── raw/corpus/
+│   │   └── corpus.jsonl          # 15 technical documents (JSONL format)
+│   └── testset/
+│       ├── queries.jsonl         # 105 ground-truth queries with answers & contexts
+│       └── qrels.tsv             # Standard TREC 4-column graded relevance judgments
+├── reports/
+│   └── figures/
+│       ├── pareto_frontier.png   # Latency vs Accuracy Pareto frontier
+│       └── archetype_ablation.png# Archetype performance breakdown
+├── static/
+│   ├── css/style.css             # Glassmorphism dark theme styles
+│   └── js/app.js                 # Interactive dashboard logic
+├── templates/
+│   └── index.html                # Semantic HTML5 playground & benchmark dashboard
+├── tests/
+│   ├── conftest.py               # Pytest environment fixtures
+│   ├── test_api.py               # REST API integration tests (health, query, stats)
+│   ├── test_bm25.py              # Inverted index & BM25+ unit tests
+│   ├── test_chunking.py          # Table preservation & row linearization tests
+│   ├── test_evaluation.py        # NDCG, MAP, ROUGE-L, significance tests
+│   ├── test_fusion.py            # RRF fusion mathematical tests
+│   ├── test_pipeline.py          # End-to-end pipeline execution tests
+│   └── test_reranker.py          # Cross-encoder tests
+├── Dockerfile                    # Multi-stage, non-root production Docker image
+├── docker-compose.yml            # Container orchestration definition
+├── pyproject.toml                # PEP 518/621 packaging (Ruff, Mypy, Pytest)
+├── requirements.txt              # Pinned production dependencies
+└── run_benchmark.py              # Standalone CLI benchmark runner
+```
 
 ---
 
-## 🚀 Quickstart
+## 🚀 Quick Start
 
-### 1. Environment Setup
+### 1. Local Environment Setup
+
 ```bash
-# Clone and enter directory
+# Clone and enter repository
+git clone https://github.com/<your-username>/advanced-hybrid-rag.git
 cd advanced-hybrid-rag
 
-# Activate virtual environment
-# Windows:
-.venv\Scripts\activate
-# Linux/macOS:
-source .venv/bin/activate
+# Create virtual environment
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
 
 # Install dependencies
 pip install -r requirements.txt
 ```
 
-### 2. Run the Quantitative Benchmark Suite
+### 2. Run the Benchmark Suite
+
 ```bash
 python run_benchmark.py
 ```
-Executes all 105 queries across Naive, Hybrid, and Reranked modes (315 retrieval passes) and prints the comparative ablation tables.
 
-### 3. Run the PyTest Suite
-```bash
-pytest -v
-```
-All unit and integration tests validate BM25 indexing, layout table chunking, RRF fusion, Cross-Encoder reranking, and pipeline evaluation.
+### 3. Run Unit and Integration Tests
 
-### 4. Run the Web UI & API Server
 ```bash
-python -m uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+pytest tests/ -v
 ```
-Open **[http://localhost:8000](http://localhost:8000)** for the Interactive Query Playground and Benchmark Dashboard.
+
+### 4. Launch the Interactive Dashboard
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+```
+Open [http://localhost:8000](http://localhost:8000) to access the interactive search playground, document ingestion manager, and evaluation benchmark visualizer.
 
 ---
 
-## 📡 API Reference
+## 🐳 Docker Deployment
 
-### `POST /api/v1/query`
-Execute end-to-end RAG query with chosen mode.
-
-```json
-{
-  "query": "What is the formula used by Horizontal Pod Autoscaler?",
-  "mode": "reranked",
-  "top_k": 5,
-  "generate_answer": true
-}
+```bash
+docker compose up --build
 ```
-
-### `POST /api/v1/documents`
-Ingest and index documents with layout-aware parsing and table extraction.
-
-### `POST /api/v1/benchmark`
-Triggers full automated evaluation across the 105-query dataset and returns JSON report.
+Access the application at `http://localhost:8000` with containerized health checks and resource management.
 
 ---
 
-## 📂 Repository Structure
+## 📜 Academic Citations & Theoretical References
 
-```
-advanced-hybrid-rag/
-├── app/
-│   ├── config.py                 # Retrieval & storage hyperparameters
-│   ├── main.py                   # FastAPI application & startup lifecycle
-│   ├── models/
-│   │   └── schemas.py            # Pydantic data contracts
-│   ├── core/
-│   │   ├── document_processor.py # Layout-aware chunker with table & breadcrumb preservation
-│   │   ├── vector_store.py       # Qdrant vector store + SentenceTransformers
-│   │   ├── bm25_retriever.py     # Okapi BM25Plus sparse retriever
-│   │   ├── fusion.py             # Cormack Reciprocal Rank Fusion (RRF)
-│   │   ├── reranker.py           # Cross-Encoder (MS-MARCO MiniLM)
-│   │   ├── generator.py          # Grounded generator & hallucination verification
-│   │   └── pipeline.py           # Unified multi-mode RAG engine
-│   ├── evaluation/
-│   │   ├── metrics.py            # Faithfulness, Precision@K, Recall, MRR, Latency
-│   │   ├── dataset.py            # 15-document multi-domain corpus & 105 benchmark queries
-│   │   └── benchmark_runner.py   # Automated 3-way evaluation suite
-│   └── api/
-│       ├── endpoints.py          # REST API endpoints
-│       └── ui.py                 # Interactive Web UI & visualization dashboard
-├── tests/                        # Full unit test suite (chunking, BM25, RRF, reranker)
-├── run_benchmark.py              # Standalone CLI benchmark runner
-├── requirements.txt              # Frozen dependency specifications
-└── pytest.ini                    # Pytest configuration
-```
+1. **Reciprocal Rank Fusion**: Cormack, G. V., Clarke, C. L., & Büttcher, S. (2009). *Reciprocal rank fusion outperforms Condorcet and individual machine learning methods*. Proceedings of the 32nd international ACM SIGIR conference on Research and development in information retrieval (SIGIR '09), 758–759.
+2. **BM25+ Ranking**: Lv, Y., & Zhai, C. (2011). *Lower-bounding term frequency normalization*. Proceedings of the 20th ACM international conference on Information and knowledge management (CIKM '11), 7–16.
+3. **Statistical Significance in IR**: Smucker, M. D., Allan, J., & Carterette, B. (2007). *A comparison of statistical significance tests for information retrieval evaluation*. Proceedings of the 16th ACM conference on Conference on information and knowledge management (CIKM '07), 623–632.
+4. **Graded Relevance Metrics**: Järvelin, K., & Kekäläinen, J. (2002). *Cumulated gain-based evaluation of retrieval techniques*. ACM Transactions on Information Systems (TOIS), 20(4), 422–446.

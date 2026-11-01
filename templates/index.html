@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Hybrid RAG Engine | Benchmark Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="/static/css/style.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 50: '#eef2ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca', 900: '#1e1b4b' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col">
+  <!-- Navbar -->
+  <header class="glass sticky top-0 z-50 px-6 py-4 border-b border-gray-800 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-indigo-600 flex items-center justify-center text-white shadow-lg shadow-indigo-500/30">
+        <i class="fa-solid fa-layer-group text-lg"></i>
+      </div>
+      <div>
+        <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+          Advanced Hybrid RAG Engine
+          <span class="text-xs bg-indigo-900/60 text-indigo-300 border border-indigo-700/50 px-2 py-0.5 rounded-full font-mono">v1.1.0</span>
+        </h1>
+        <p class="text-xs text-gray-400">Dense Embeddings + Sparse BM25+ Inverted Index + Reciprocal Rank Fusion + Cross-Encoder Reranker</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-4">
+      <div id="indexStats" class="text-xs text-gray-400 bg-gray-900/80 px-3 py-1.5 rounded-lg border border-gray-800 font-mono">
+        <i class="fa-solid fa-database text-indigo-400 mr-1.5"></i> Chunks: <span id="chunkCount" class="text-white font-bold">-</span>
+      </div>
+      <button onclick="loadSampleCorpus()" class="text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-medium px-3.5 py-1.5 rounded-lg transition shadow-md shadow-indigo-600/20 flex items-center gap-1.5">
+        <i class="fa-solid fa-seedling"></i> Load Sample Data
+      </button>
+      <a href="/docs" target="_blank" class="text-xs text-gray-400 hover:text-white px-2 py-1 rounded transition">
+        API Docs <i class="fa-solid fa-arrow-up-right-from-square text-[10px] ml-0.5"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <div class="px-6 border-b border-gray-800 bg-gray-950/40">
+    <nav class="flex gap-6">
+      <button id="tabBtn-playground" onclick="switchTab('playground')" class="py-3 px-1 border-b-2 border-indigo-500 text-indigo-400 text-xs font-semibold flex items-center gap-2 transition">
+        <i class="fa-solid fa-flask"></i> Interactive Playground
+      </button>
+      <button id="tabBtn-benchmark" onclick="switchTab('benchmark')" class="py-3 px-1 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold flex items-center gap-2 transition">
+        <i class="fa-solid fa-chart-column"></i> Quantitative Evaluation
+      </button>
+      <button id="tabBtn-documents" onclick="switchTab('documents')" class="py-3 px-1 border-b-2 border-transparent text-gray-400 hover:text-white text-xs font-semibold flex items-center gap-2 transition">
+        <i class="fa-solid fa-folder-open"></i> Knowledge Management
+      </button>
+    </nav>
+  </div>
+
+  <!-- Main Content Container -->
+  <main class="flex-1 p-6 max-w-7xl w-full mx-auto space-y-6">
+    <!-- TAB 1: PLAYGROUND -->
+    <div id="tab-playground" class="space-y-6">
+      <!-- Query Control Panel -->
+      <div class="glass p-5 rounded-2xl space-y-4">
+        <div class="flex flex-col md:flex-row gap-4 items-start md:items-center justify-between">
+          <!-- Mode Selector -->
+          <div class="flex items-center gap-2 bg-gray-900/90 p-1.5 rounded-xl border border-gray-800">
+            <span class="text-xs text-gray-400 px-2 font-mono">Mode:</span>
+            <button id="mode-naive" onclick="setMode('naive')" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">
+              Dense Only
+            </button>
+            <button id="mode-hybrid" onclick="setMode('hybrid')" class="px-3.5 py-1.5 rounded-lg text-xs font-medium text-gray-400 hover:text-white transition">
+              Hybrid (RRF)
+            </button>
+            <button id="mode-reranked" onclick="setMode('reranked')" class="px-3.5 py-1.5 rounded-lg text-xs font-medium bg-indigo-600 text-white shadow transition">
+              Hybrid + Reranker
+            </button>
+          </div>
+
+          <!-- Pre-canned archetypes -->
+          <div class="flex items-center gap-2 text-xs text-gray-400">
+            <span>Examples:</span>
+            <button onclick="setQuery('How does Kubernetes HPA calculate desired replicas?')" class="hover:text-indigo-400 underline decoration-dotted">HPA Formula</button>
+            <span>•</span>
+            <button onclick="setQuery('What causes write skew anomaly under Snapshot Isolation?')" class="hover:text-indigo-400 underline decoration-dotted">Write Skew</button>
+            <span>•</span>
+            <button onclick="setQuery('What is the Cormack constant k in Reciprocal Rank Fusion?')" class="hover:text-indigo-400 underline decoration-dotted">RRF Formula</button>
+          </div>
+        </div>
+
+        <!-- Query Input -->
+        <div class="flex gap-2">
+          <input id="queryInput" type="text" placeholder="Enter research query or engineering question..." class="flex-1 bg-gray-900 text-white text-sm border border-gray-800 rounded-xl px-4 py-3 focus:outline-none focus:border-indigo-500 font-sans">
+          <button id="btnSubmitQuery" onclick="executeQuery()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-6 py-3 rounded-xl font-medium text-xs transition flex items-center gap-2 shadow-lg shadow-indigo-600/30">
+            <span>Query</span> <i class="fa-solid fa-paper-plane text-[10px]"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Results Display -->
+      <div id="resultsContainer" class="hidden space-y-6">
+        <!-- Answer & Latency Card -->
+        <div class="glass p-6 rounded-2xl space-y-4">
+          <div class="flex flex-wrap justify-between items-center gap-2 border-b border-gray-800 pb-3">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+              <i class="fa-solid fa-robot text-indigo-400"></i> Synthesized Answer
+            </h3>
+            <div id="latencyPills" class="flex flex-wrap items-center gap-2 font-mono text-[11px]"></div>
+          </div>
+
+          <div id="generatedAnswer" class="text-sm text-gray-200 leading-relaxed font-sans"></div>
+
+          <div class="flex items-center justify-between pt-2 border-t border-gray-800 text-xs text-gray-400">
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved text-emerald-400"></i> Attribution / Grounding Score: <span id="groundingScore" class="font-mono text-emerald-400 font-bold">-</span>
+            </span>
+          </div>
+        </div>
+
+        <!-- Retrieved Passages & Telemetry -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-wider font-mono flex items-center gap-2">
+            <i class="fa-solid fa-list-ol text-indigo-400"></i> Retrieved Passages & Rank Fusion Telemetry
+          </h3>
+          <div id="retrievedChunksList" class="space-y-3"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 2: BENCHMARK -->
+    <div id="tab-benchmark" class="hidden space-y-6">
+      <div class="glass p-6 rounded-2xl space-y-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-white flex items-center gap-2">
+              Quantitative Evaluation Suite
+              <i class="fa-solid fa-chart-line text-indigo-400"></i>
+            </h2>
+            <p class="text-xs text-gray-400">
+              Evaluates Naive vs Hybrid vs Reranked pipelines across Cranfield test queries.
+            </p>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="benchmarkTimestamp" class="text-xs text-gray-500 font-mono">No run yet</span>
+            <button id="btnRunBenchmark" onclick="triggerBenchmark()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs px-4 py-2 rounded-xl transition flex items-center gap-2 shadow-md shadow-indigo-600/20">
+              <i class="fa-solid fa-play"></i> Run Quantitative Benchmark
+            </button>
+          </div>
+        </div>
+
+        <!-- Metric Matrix Table -->
+        <div class="overflow-x-auto pt-2">
+          <table class="w-full text-left text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-gray-800 text-gray-400 font-mono text-[11px]">
+                <th class="py-2 px-4">Evaluation Metric</th>
+                <th class="py-2 px-4">Naive (Dense)</th>
+                <th class="py-2 px-4">Hybrid (Dense + BM25)</th>
+                <th class="py-2 px-4 text-indigo-400 font-bold">Reranked (Cross-Encoder)</th>
+                <th class="py-2 px-4">Δ Hybrid vs Naive</th>
+                <th class="py-2 px-4 text-emerald-400 font-bold">Δ Reranked vs Naive</th>
+              </tr>
+            </thead>
+            <tbody id="benchmarkMatrixBody" class="divide-y divide-gray-800/60 font-mono text-gray-300">
+              <tr>
+                <td colspan="6" class="py-6 text-center text-gray-500 italic font-sans">
+                  Click 'Run Quantitative Benchmark' or load historical report.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Metric Bar Comparisons -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-gray-800">
+          <div class="glass p-5 rounded-2xl space-y-3">
+            <h4 class="text-xs font-bold text-gray-300 uppercase font-mono flex items-center gap-2">
+              <i class="fa-solid fa-bullseye text-indigo-400"></i> Context Precision@K
+            </h4>
+            <div id="barPrecision" class="space-y-2 pt-1 text-xs"></div>
+          </div>
+          <div class="glass p-5 rounded-2xl space-y-3">
+            <h4 class="text-xs font-bold text-gray-300 uppercase font-mono flex items-center gap-2">
+              <i class="fa-solid fa-shield-halved text-emerald-400"></i> Faithfulness
+            </h4>
+            <div id="barFaithfulness" class="space-y-2 pt-1 text-xs"></div>
+          </div>
+          <div class="glass p-5 rounded-2xl space-y-3">
+            <h4 class="text-xs font-bold text-gray-300 uppercase font-mono flex items-center gap-2">
+              <i class="fa-solid fa-arrow-down-1-9 text-amber-400"></i> Mean Reciprocal Rank
+            </h4>
+            <div id="barMRR" class="space-y-2 pt-1 text-xs"></div>
+          </div>
+          <div class="glass p-5 rounded-2xl space-y-3">
+            <h4 class="text-xs font-bold text-gray-300 uppercase font-mono flex items-center gap-2">
+              <i class="fa-solid fa-stopwatch text-cyan-400"></i> Median Latency (P50 ms)
+            </h4>
+            <div id="barLatency" class="space-y-2 pt-1 text-xs"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: DOCUMENTS -->
+    <div id="tab-documents" class="hidden space-y-6">
+      <div class="glass p-6 rounded-2xl space-y-4">
+        <h2 class="text-lg font-bold text-white flex items-center gap-2">
+          Knowledge Base Ingestion
+          <i class="fa-solid fa-database text-indigo-400"></i>
+        </h2>
+        <p class="text-xs text-gray-400">
+          Documents added here are chunked, embedded into the Qdrant vector store, and tokenized into the BM25 inverted index concurrently.
+        </p>
+
+        <div class="space-y-3 pt-2">
+          <input id="docTitle" type="text" placeholder="Document Title (e.g. 'Kubernetes Architecture')" class="w-full bg-gray-900 text-white text-xs border border-gray-800 rounded-xl px-4 py-2.5 focus:outline-none focus:border-indigo-500">
+          <textarea id="docText" rows="5" placeholder="Document body text to chunk and index..." class="w-full bg-gray-900 text-white text-xs border border-gray-800 rounded-xl px-4 py-2.5 focus:outline-none focus:border-indigo-500"></textarea>
+          <div class="flex justify-between items-center">
+            <button onclick="ingestCustomDoc()" class="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold px-4 py-2 rounded-xl transition flex items-center gap-1.5">
+              <i class="fa-solid fa-plus"></i> Ingest Document
+            </button>
+            <button onclick="clearAllIndices()" class="text-xs text-rose-400 hover:text-rose-300 px-3 py-1.5 rounded transition">
+              <i class="fa-solid fa-trash mr-1"></i> Clear All Indices
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="glass px-6 py-4 border-t border-gray-800 text-center text-xs text-gray-500">
+    Advanced Hybrid RAG Engine | Information Retrieval & Ragas Quantitative Benchmarking
+  </footer>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

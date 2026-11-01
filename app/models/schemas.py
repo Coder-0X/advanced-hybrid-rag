@@ -86,6 +86,10 @@ class MetricSummary(BaseModel):
     hit_rate: float = Field(..., description="Did retrieval contain the ground truth? (0.0 or 1.0 average)")
     mrr: float = Field(..., description="Mean Reciprocal Rank of first relevant chunk")
     answer_relevancy: float = Field(..., description="Semantic alignment of answer to query (0.0 to 1.0)")
+    ndcg_10: float = Field(default=0.0, description="Normalized Discounted Cumulative Gain at rank 10")
+    map_k: float = Field(default=0.0, description="Mean Average Precision at rank K normalized by R_q")
+    rouge_l: float = Field(default=0.0, description="Reference-based Longest Common Subsequence F1 score")
+    token_f1: float = Field(default=0.0, description="Token overlap harmonic F1 score")
     latency_mean_ms: float
     latency_p50_ms: float
     latency_p95_ms: float
@@ -103,3 +107,4 @@ class BenchmarkReport(BaseModel):
     sample_count: int
     summary: PipelineBenchmarkComparison
     detailed_results: List[Dict[str, Any]]
+    statistical_significance: Optional[Dict[str, Any]] = None
