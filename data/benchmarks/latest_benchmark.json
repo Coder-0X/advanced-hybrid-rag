@@ -1,0 +1,113 @@
+{
+  "run_id": "bench_1793537093",
+  "timestamp": "2026-11-01T12:44:53.843134Z",
+  "sample_count": 1,
+  "summary": {
+    "naive": {
+      "faithfulness": 1.0,
+      "context_precision": 0.0,
+      "context_recall": 1.0,
+      "hit_rate": 0.0,
+      "mrr": 0.0,
+      "answer_relevancy": 0.5143,
+      "latency_mean_ms": 41.35,
+      "latency_p50_ms": 41.35,
+      "latency_p95_ms": 41.35
+    },
+    "hybrid": {
+      "faithfulness": 1.0,
+      "context_precision": 0.3333,
+      "context_recall": 1.0,
+      "hit_rate": 1.0,
+      "mrr": 0.3333,
+      "answer_relevancy": 0.6857,
+      "latency_mean_ms": 13.56,
+      "latency_p50_ms": 13.56,
+      "latency_p95_ms": 13.56
+    },
+    "reranked": {
+      "faithfulness": 1.0,
+      "context_precision": 0.3333,
+      "context_recall": 1.0,
+      "hit_rate": 1.0,
+      "mrr": 0.3333,
+      "answer_relevancy": 0.6857,
+      "latency_mean_ms": 480.91,
+      "latency_p50_ms": 480.91,
+      "latency_p95_ms": 480.91
+    },
+    "delta_hybrid_vs_naive": {
+      "faithfulness": 0.0,
+      "context_precision": 0.3333,
+      "context_recall": 0.0,
+      "hit_rate": 1.0,
+      "mrr": 0.3333,
+      "answer_relevancy": 0.1714,
+      "latency_p50_ms": -27.79
+    },
+    "delta_reranked_vs_naive": {
+      "faithfulness": 0.0,
+      "context_precision": 0.3333,
+      "context_recall": 0.0,
+      "hit_rate": 1.0,
+      "mrr": 0.3333,
+      "answer_relevancy": 0.1714,
+      "latency_p50_ms": 439.56
+    }
+  },
+  "detailed_results": [
+    {
+      "id": "test_q1",
+      "category": "general",
+      "query": "How does Kubernetes HPA calculate desired replicas?",
+      "ground_truth_answer": "desiredReplicas = ceil[currentReplicas * (currentMetricValue / desiredMetricValue)]",
+      "modes": {
+        "naive": {
+          "answer": "[Section: Kubernetes Pod Autoscaling Mechanics > HPA Scaling Formula]\nThe desired replica count is deterministically computed according to the following mathematical formula: desiredReplicas = ceil[currentReplicas * (currentMetricValue / desiredMetricValue)] [1] [Section: Kubernetes Pod Autoscaling Mechanics]\nKubernetes implements the Horizontal Pod Autoscaler (HPA) to dynamically adjust pod replica counts based on observed CPU utilization, memory consumption, or custom Prometheus metrics. [2] [Section: Kubernetes Pod Autoscaling Mechanics > Stabilization and Flapping Prevention]\nHPA queries the cluster Metrics Server periodically every 15 seconds. [3]",
+          "retrieved_chunk_ids": [
+            "doc_k8s_autoscaling_chunk_1",
+            "doc_k8s_autoscaling_chunk_0",
+            "doc_k8s_autoscaling_chunk_2"
+          ],
+          "faithfulness": 1.0,
+          "context_precision": 0.0,
+          "context_recall": 1.0,
+          "hit_rate": 0.0,
+          "mrr": 0.0,
+          "answer_relevancy": 0.5143,
+          "latency_ms": 41.35
+        },
+        "hybrid": {
+          "answer": "[Section: Kubernetes Pod Autoscaling Mechanics > HPA Scaling Formula]\nThe desired replica count is deterministically computed according to the following mathematical formula: desiredReplicas = ceil[currentReplicas * (currentMetricValue / desiredMetricValue)] [1] [Section: Kubernetes Pod Autoscaling Mechanics > Vertical Pod Autoscaler (VPA) Modes]\nWhile HPA adjusts horizontal replicas, Vertical Pod Autoscaler (VPA) modifies container CPU and memory resource requests. [3] [Section: Kubernetes Pod Autoscaling Mechanics]\nKubernetes implements the Horizontal Pod Autoscaler (HPA) to dynamically adjust pod replica counts based on observed CPU utilization, memory consumption, or custom Prometheus metrics. [2]",
+          "retrieved_chunk_ids": [
+            "doc_k8s_autoscaling_chunk_1",
+            "doc_k8s_autoscaling_chunk_0",
+            "doc_k8s_autoscaling_chunk_3"
+          ],
+          "faithfulness": 1.0,
+          "context_precision": 0.3333,
+          "context_recall": 1.0,
+          "hit_rate": 1.0,
+          "mrr": 0.3333,
+          "answer_relevancy": 0.6857,
+          "latency_ms": 13.56
+        },
+        "reranked": {
+          "answer": "[Section: Kubernetes Pod Autoscaling Mechanics > HPA Scaling Formula]\nThe desired replica count is deterministically computed according to the following mathematical formula: desiredReplicas = ceil[currentReplicas * (currentMetricValue / desiredMetricValue)] [1] [Section: Kubernetes Pod Autoscaling Mechanics > Vertical Pod Autoscaler (VPA) Modes]\nWhile HPA adjusts horizontal replicas, Vertical Pod Autoscaler (VPA) modifies container CPU and memory resource requests. [3] [Section: Kubernetes Pod Autoscaling Mechanics]\nKubernetes implements the Horizontal Pod Autoscaler (HPA) to dynamically adjust pod replica counts based on observed CPU utilization, memory consumption, or custom Prometheus metrics. [2]",
+          "retrieved_chunk_ids": [
+            "doc_k8s_autoscaling_chunk_1",
+            "doc_k8s_autoscaling_chunk_0",
+            "doc_k8s_autoscaling_chunk_3"
+          ],
+          "faithfulness": 1.0,
+          "context_precision": 0.3333,
+          "context_recall": 1.0,
+          "hit_rate": 1.0,
+          "mrr": 0.3333,
+          "answer_relevancy": 0.6857,
+          "latency_ms": 480.91
+        }
+      }
+    }
+  ]
+}
