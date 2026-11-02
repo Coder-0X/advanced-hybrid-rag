@@ -1,0 +1,1711 @@
+{
+  "num_queries": 105,
+  "fp32": {
+    "mean_latency_ms": 675.0891999976288,
+    "p50_latency_ms": 633.4488999855239,
+    "p95_latency_ms": 1048.4479000035208,
+    "ndcg_at_10": 0.9452161904761905,
+    "map_at_10": 0.8553123809523809,
+    "mrr": 1.0,
+    "model_size_mb": 86.78450107574463
+  },
+  "int8": {
+    "mean_latency_ms": 374.14798476439455,
+    "p50_latency_ms": 366.1322999978438,
+    "p95_latency_ms": 585.8620600076391,
+    "ndcg_at_10": 0.9294733333333335,
+    "map_at_10": 0.842924761904762,
+    "mrr": 0.9706349206349205,
+    "model_size_mb": 21.99136734008789
+  },
+  "comparison": {
+    "latency_speedup_x": 1.8043373945278378,
+    "compression_ratio_x": 3.9462985513204467,
+    "ndcg_retention_pct": 98.33447021946101,
+    "wilcoxon_statistic": 529.5,
+    "wilcoxon_p_value": 0.2970704393414113,
+    "statistical_verdict": "Statistically Insignificant (p > 0.05)"
+  },
+  "per_query_results": [
+    {
+      "query_id": "lex_01_hpa_formula",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 489.80979999760166,
+        "ndcg": 0.8473,
+        "map": 0.5556,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 375.62599999364465,
+        "ndcg": 0.9409,
+        "map": 0.7556,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_02_mvcc_tuple_headers",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 700.6567000062205,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 429.2167000239715,
+        "ndcg": 0.9639,
+        "map": 0.8333,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_03_rrf_cormack_constant",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 540.5430999817327,
+        "ndcg": 0.9726,
+        "map": 0.8667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 161.92419998697005,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_04_bm25plus_delta",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 470.90149999712594,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 214.19630001764745,
+        "ndcg": 0.9726,
+        "map": 0.8667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_05_hnsw_hyperparameters",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 521.8058000027668,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 221.68379998765886,
+        "ndcg": 0.52,
+        "map": 0.4444,
+        "mrr": 0.3333333333333333
+      }
+    },
+    {
+      "query_id": "lex_06_raft_heartbeat_timeout",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 417.48209999059327,
+        "ndcg": 0.9832,
+        "map": 0.9167,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 140.93659998616204,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_07_write_skew_anomaly",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 448.5504000040237,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 225.4186999925878,
+        "ndcg": 0.9639,
+        "map": 0.8333,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_08_nf4_quantization",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 539.271399989957,
+        "ndcg": 0.8741,
+        "map": 0.625,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 271.20540000032634,
+        "ndcg": 0.8521,
+        "map": 0.5667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_09_double_quantization_savings",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 447.3633999878075,
+        "ndcg": 0.796,
+        "map": 0.5,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 260.19329999689944,
+        "ndcg": 0.7521,
+        "map": 0.375,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_10_paged_attention_waste",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 536.1305999977048,
+        "ndcg": 0.9056,
+        "map": 0.75,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 289.56460001063533,
+        "ndcg": 0.9056,
+        "map": 0.75,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_11_cloud_take_or_pay_penalty",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 838.493399991421,
+        "ndcg": 0.9335,
+        "map": 0.7222,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 381.3957000093069,
+        "ndcg": 0.9726,
+        "map": 0.8667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_12_coredns_fqdn_format",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 460.7514000090305,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 193.4666000015568,
+        "ndcg": 0.8305,
+        "map": 0.5,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_13_cilium_ebpf_sockops",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 495.9359999920707,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 149.91140001802705,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_14_siread_lock_graph",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 653.1485999876168,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 453.6849999858532,
+        "ndcg": 0.9448,
+        "map": 0.75,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_15_online_softmax_trick",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 576.3353999936953,
+        "ndcg": 0.9752,
+        "map": 0.8875,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 360.4353999835439,
+        "ndcg": 0.8904,
+        "map": 0.6875,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_16_memtable_skiplist",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 588.1349999981467,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 311.94159999722615,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_17_hpa_stabilization_window",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 410.3815999988001,
+        "ndcg": 0.9832,
+        "map": 0.9167,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 132.51080000190996,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_18_raft_quorum_formula",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 667.1228999912273,
+        "ndcg": 0.9832,
+        "map": 0.9167,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 246.32090001250617,
+        "ndcg": 0.8305,
+        "map": 0.5,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_19_vpa_four_modes",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 346.74619999714196,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 189.7418000153266,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_20_ipvs_vs_iptables_complexity",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 419.5857999729924,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 249.20830002520233,
+        "ndcg": 0.8473,
+        "map": 0.5556,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_21_leveled_compaction_waf",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 466.56780000193976,
+        "ndcg": 0.9328,
+        "map": 0.7,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 328.4745999844745,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_22_cross_encoder_model_name",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 752.4091000086628,
+        "ndcg": 0.7673,
+        "map": 0.4167,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 429.5732000027783,
+        "ndcg": 0.7673,
+        "map": 0.4167,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_23_imputed_interest_leases",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 1159.8714999854565,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 522.8035999753047,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_24_services_gross_margin",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 1074.236300017219,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 656.3178999931552,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "lex_25_cuda_unified_memory_qlora",
+      "category": "lexical_exact",
+      "fp32": {
+        "latency_ms": 516.5419999975711,
+        "ndcg": 0.9056,
+        "map": 0.75,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 380.85069999215193,
+        "ndcg": 0.9056,
+        "map": 0.75,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_26_flapping_mitigation",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 590.3307999833487,
+        "ndcg": 0.9726,
+        "map": 0.8667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 222.45120001025498,
+        "ndcg": 0.9726,
+        "map": 0.8667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_27_score_calibration_failure",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 586.3141999871004,
+        "ndcg": 0.9515,
+        "map": 0.8056,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 428.3555999863893,
+        "ndcg": 0.9832,
+        "map": 0.9167,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_28_logarithmic_vector_search",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 492.2985000011977,
+        "ndcg": 0.8305,
+        "map": 0.5,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 229.11859999294393,
+        "ndcg": 0.8305,
+        "map": 0.5,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_29_cross_transaction_invariant_violation",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 445.48979998216964,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 286.49110000696965,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_30_decoding_underutilization",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 510.34330000402406,
+        "ndcg": 0.8302,
+        "map": 0.5,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 399.480299995048,
+        "ndcg": 0.5023,
+        "map": 0.4417,
+        "mrr": 0.5
+      }
+    },
+    {
+      "query_id": "sem_31_bypassing_tcp_ip_stack",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 633.4488999855239,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 420.7796000118833,
+        "ndcg": 0.9409,
+        "map": 0.7556,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_32_joint_cross_attention_superiority",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 573.9380999875721,
+        "ndcg": 0.8808,
+        "map": 0.65,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 378.3034000080079,
+        "ndcg": 0.8904,
+        "map": 0.6875,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_33_preventing_election_deadlocks",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 562.5193999730982,
+        "ndcg": 0.8473,
+        "map": 0.5556,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 309.0886000136379,
+        "ndcg": 0.8199,
+        "map": 0.4667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_34_preventing_long_document_underflow",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 447.8917999949772,
+        "ndcg": 0.9726,
+        "map": 0.8667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 304.78620002395473,
+        "ndcg": 0.8473,
+        "map": 0.5556,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_35_preventing_gpu_stall_via_sram",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 702.6233999931719,
+        "ndcg": 0.9056,
+        "map": 0.75,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 407.23219999927096,
+        "ndcg": 0.9348,
+        "map": 0.747,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_36_kv_cache_virtual_paging",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 505.81509998301044,
+        "ndcg": 0.9056,
+        "map": 0.75,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 458.9540000015404,
+        "ndcg": 0.9837,
+        "map": 0.9167,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_37_reducing_read_amplification_lsm",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 566.4859999960754,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 318.9694999891799,
+        "ndcg": 0.9639,
+        "map": 0.8333,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_38_non_overwriting_tuple_storage",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 537.7608999842778,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 360.5078000109643,
+        "ndcg": 0.9448,
+        "map": 0.75,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_39_quantized_parameter_finetuning",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 679.0417000011075,
+        "ndcg": 0.8808,
+        "map": 0.65,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 428.4639999968931,
+        "ndcg": 0.4135,
+        "map": 0.2875,
+        "mrr": 0.25
+      }
+    },
+    {
+      "query_id": "sem_40_underutilization_cloud_penalties",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 1002.7860999980476,
+        "ndcg": 0.9652,
+        "map": 0.8333,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 621.7088999983389,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_41_iptables_linear_scaling_issue",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 545.3970000089612,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 311.0739999974612,
+        "ndcg": 0.9832,
+        "map": 0.9167,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_42_liquid_asset_solvency_ratio",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 774.3115000193939,
+        "ndcg": 0.7003,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 444.8454999946989,
+        "ndcg": 0.7003,
+        "map": 0.6667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_43_rejection_sampling_distribution_match",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 593.7329999869689,
+        "ndcg": 0.796,
+        "map": 0.5,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 364.8408000008203,
+        "ndcg": 0.8617,
+        "map": 0.6042,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_44_bm25_length_normalization_tradeoff",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 500.23260002490133,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 336.4891999808606,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_45_wal_crash_recovery",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 569.2646999959834,
+        "ndcg": 0.9448,
+        "map": 0.75,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 322.5527000031434,
+        "ndcg": 0.7967,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_46_services_margin_advantage",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 844.354500004556,
+        "ndcg": 0.9832,
+        "map": 0.9167,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 449.25079998211004,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_47_hnsw_edge_connectivity_tradeoff",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 484.1195999761112,
+        "ndcg": 0.8199,
+        "map": 0.4667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 343.27149999444373,
+        "ndcg": 0.8305,
+        "map": 0.5,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_48_double_quantization_concept",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 520.6255999801215,
+        "ndcg": 0.9056,
+        "map": 0.75,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 275.3241000173148,
+        "ndcg": 0.9752,
+        "map": 0.8875,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_49_vpa_resource_modification",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 637.2000000264961,
+        "ndcg": 0.8473,
+        "map": 0.5556,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 366.1322999978438,
+        "ndcg": 0.9597,
+        "map": 0.8095,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "sem_50_raft_log_safety_guarantee",
+      "category": "semantic_paraphrase",
+      "fp32": {
+        "latency_ms": 504.19760000659153,
+        "ndcg": 0.9832,
+        "map": 0.9167,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 329.89749999251217,
+        "ndcg": 0.9726,
+        "map": 0.8667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_51_total_current_liabilities_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 894.2334000021219,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 368.80250001559034,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_52_cash_equivalents_2024",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 907.6358000165783,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 392.9223000013735,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_53_quick_ratio_figures",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 687.019999983022,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 409.49959997669794,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_54_total_current_assets_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 850.0965000130236,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 553.249099990353,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_55_stockholders_equity_deficit_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 797.1431000041775,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 340.24620000855066,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_56_americas_sales_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 749.5712999952957,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 396.32920001167804,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_57_china_operating_margin",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 950.4049000097439,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 503.2657000119798,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_58_consolidated_net_sales_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 772.7094999863766,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 394.95410001836717,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_59_europe_sales_2024",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 685.638499999186,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 365.69690000033006,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_60_lease_payments_2026",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 641.544599988265,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 372.16160001116805,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_61_cloud_commitments_2027",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 715.1119000045583,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 410.48680001404136,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_62_total_cloud_commitments",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 900.2500000060536,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 468.85679999832064,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_63_ppe_net_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 1002.545099996496,
+        "ndcg": 0.8213,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 505.13540001702495,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_64_working_capital_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 811.7723999894224,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 450.5735000129789,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_65_pv_operating_leases",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 1054.343499999959,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 406.6205999988597,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_66_services_gross_margin_value",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 777.643099980196,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 419.030399993062,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_67_accounts_payable_comparison",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 727.72610001266,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 395.9675999940373,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_68_lease_payments_2029",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 664.3251999921631,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 376.08580000232905,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_69_current_ratio_2024",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 866.3286000082735,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 479.337900003884,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_70_hardware_revenue_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 911.4681000064593,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 450.7234000193421,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_71_asia_pacific_margin",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 885.2423999924213,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 470.2535000105854,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_72_accrued_expenses_2025",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 699.0690999955405,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 340.32340001431294,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_73_leases_thereafter",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 772.9876000084914,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 497.52239999361336,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_74_total_undiscounted_leases",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 941.5266000141855,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 528.5501999896951,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "tab_75_services_revenue_percentage",
+      "category": "tabular_quantitative",
+      "fp32": {
+        "latency_ms": 796.7993999773171,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 457.6394000032451,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_76_consensus_heartbeat_distractor",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 556.152299977839,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 282.2464999917429,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_77_replica_scaling_formula_distractor",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 572.7587000001222,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 273.36140000261366,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_78_postgresql_phantom_prevention",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 463.4393000160344,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 378.49579998874106,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_79_rrf_smoothing_parameter_k",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 483.00670000026,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 223.51660000276752,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_80_memtable_functionality",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 468.57540000928566,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 184.05829998664558,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_81_hnsw_edge_parameter_m",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 516.279300005408,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 322.85620001493953,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_82_scale_down_stabilization",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 552.1785999881104,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 330.5191000108607,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_83_raft_rpc_for_replication",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 518.2854999729898,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 252.72819999372587,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_84_ipvs_ipset_advantage",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 653.3966999850236,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 347.03360000276007,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_85_wal_purpose_in_storage",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 614.7317999857478,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 328.72459999634884,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_86_bm25_parameter_b",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 1021.540499990806,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 555.9251999948174,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_87_flashattention_sram_bandwidth",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 574.9994000070728,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 495.3096000244841,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_88_quick_vs_current_ratio",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 996.980199997779,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 654.1615000169259,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_89_speculative_draft_model_role",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 746.1366000061389,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 333.9296000194736,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "adv_90_nf4_distribution_type",
+      "category": "adversarial_distractor",
+      "fp32": {
+        "latency_ms": 1106.6631999856327,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 599.2142999893986,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_91_cash_vs_commitments_coverage",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 911.6021000081673,
+        "ndcg": 0.8213,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 564.932300010696,
+        "ndcg": 0.8213,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_92_dense_sparse_complementarity",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 552.367399999639,
+        "ndcg": 0.8473,
+        "map": 0.5556,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 297.9819000174757,
+        "ndcg": 0.6835,
+        "map": 0.6389,
+        "mrr": 0.5
+      }
+    },
+    {
+      "query_id": "syn_93_two_stage_ir_efficiency",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 1146.1135999998078,
+        "ndcg": 0.7673,
+        "map": 0.4167,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 775.7984999916516,
+        "ndcg": 0.7521,
+        "map": 0.375,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_94_layout_aware_table_benefit",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 823.967200005427,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 411.8348000047263,
+        "ndcg": 0.5158,
+        "map": 0.3889,
+        "mrr": 0.3333333333333333
+      }
+    },
+    {
+      "query_id": "syn_95_raft_election_and_log_safety",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 664.8156000010204,
+        "ndcg": 0.7262,
+        "map": 0.3333,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 299.57960001775064,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_96_qlora_three_innovations",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 679.3597000068985,
+        "ndcg": 0.9056,
+        "map": 0.75,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 331.41949999844655,
+        "ndcg": 0.8808,
+        "map": 0.65,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_97_hnsw_tradeoff_dynamics",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 1031.999899976654,
+        "ndcg": 0.8125,
+        "map": 0.4444,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 591.094500006875,
+        "ndcg": 0.7262,
+        "map": 0.3333,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_98_mvcc_and_ssi_write_skew",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 551.5113000001293,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 296.24550000880845,
+        "ndcg": 0.9448,
+        "map": 0.75,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_99_flashattention_tiling_and_recomputation",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 607.8829000180122,
+        "ndcg": 0.9904,
+        "map": 0.95,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 329.7389000072144,
+        "ndcg": 0.9752,
+        "map": 0.8875,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_100_hpa_vs_vpa_resource_allocation",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 555.2236000075936,
+        "ndcg": 0.879,
+        "map": 0.6667,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 357.63959999894723,
+        "ndcg": 0.8473,
+        "map": 0.5556,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_101_bm25plus_long_tail_resilience",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 469.0582000184804,
+        "ndcg": 0.9832,
+        "map": 0.9167,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 284.3577000021469,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_102_cloud_commitment_penalty_risk",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 1052.5599000102375,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 533.5708000056911,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_103_speculative_decoding_acceleration",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 596.9128999859095,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 405.5956000229344,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_104_lsm_compaction_tradeoffs",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 719.5703000179492,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 330.27010000660084,
+        "ndcg": 0.9639,
+        "map": 0.8333,
+        "mrr": 1.0
+      }
+    },
+    {
+      "query_id": "syn_105_geographic_sales_vs_margins",
+      "category": "synthesis_multihop",
+      "fp32": {
+        "latency_ms": 863.8586000015493,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      },
+      "int8": {
+        "latency_ms": 464.19180001248606,
+        "ndcg": 1.0,
+        "map": 1.0,
+        "mrr": 1.0
+      }
+    }
+  ]
+}

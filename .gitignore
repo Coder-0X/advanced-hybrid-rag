@@ -20,6 +20,10 @@ data/qdrant_db/
 data/benchmarks/*.json
 !data/benchmarks/latest_benchmark.json
 
+# Model weights & ONNX binaries
+models/*.onnx
+models/**/*.onnx
+
 # Environment & Secrets
 .env
 .env.local
