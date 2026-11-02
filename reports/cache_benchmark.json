@@ -1,0 +1,249 @@
+{
+  "single_flight_stampede_suppression": {
+    "num_concurrent_requests": 50,
+    "downstream_executions": 1,
+    "coalesced_requests": 49,
+    "suppression_ratio": 0.98,
+    "total_burst_latency_ms": 18.77500000409782
+  },
+  "threshold_calibration": {
+    "optimal_threshold_tau": 0.75,
+    "best_roc_point": {
+      "threshold": 0.75,
+      "tpr": 0.2,
+      "fpr": 0.0,
+      "precision": 1.0,
+      "recall": 0.2,
+      "f1": 0.33333333333333337,
+      "youden_j": 0.2
+    },
+    "roc_curve": [
+      {
+        "threshold": 0.75,
+        "tpr": 0.2,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.33333333333333337,
+        "youden_j": 0.2
+      },
+      {
+        "threshold": 0.76,
+        "tpr": 0.2,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.33333333333333337,
+        "youden_j": 0.2
+      },
+      {
+        "threshold": 0.77,
+        "tpr": 0.2,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.33333333333333337,
+        "youden_j": 0.2
+      },
+      {
+        "threshold": 0.78,
+        "tpr": 0.2,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.33333333333333337,
+        "youden_j": 0.2
+      },
+      {
+        "threshold": 0.79,
+        "tpr": 0.2,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.33333333333333337,
+        "youden_j": 0.2
+      },
+      {
+        "threshold": 0.8,
+        "tpr": 0.2,
+        "fpr": 0.0,
+        "precision": 1.0,
+        "recall": 0.2,
+        "f1": 0.33333333333333337,
+        "youden_j": 0.2
+      },
+      {
+        "threshold": 0.81,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.82,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.83,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.84,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.85,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.86,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.87,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.88,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.89,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.9,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.91,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.92,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.93,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.94,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.95,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.96,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.97,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.98,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      },
+      {
+        "threshold": 0.99,
+        "tpr": 0.0,
+        "fpr": 0.0,
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1": 0.0,
+        "youden_j": 0.0
+      }
+    ],
+    "figure_path": "C:\\Users\\NITRO V 15\\.gemini\\antigravity\\scratch\\advanced-hybrid-rag\\reports\\figures\\cache_threshold_calibration.png"
+  }
+}

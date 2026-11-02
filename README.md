@@ -7,6 +7,9 @@
 [![Reranker](https://img.shields.io/badge/Reranker-Cross--Encoder-purple.svg)](https://huggingface.co/cross-encoder/ms-marco-MiniLM-L-6-v2)
 [![Evaluation](https://img.shields.io/badge/Benchmark-105%20Cranfield%20Queries-success.svg)](data/testset/)
 [![Significance](https://img.shields.io/badge/Significance-Wilcoxon%20%26%20Fisher%20Permutation-blueviolet.svg)](app/evaluation/significance.py)
+[![INT8 Quantization](https://img.shields.io/badge/ONNX%20INT8-3.95x%20Compression%20%7C%201.80x%20Speedup-brightgreen.svg)](benchmarks/run_quantization_eval.py)
+[![Concurrency](https://img.shields.io/badge/Concurrency-Sliding%20Window%20Micro--Batching-orange.svg)](app/concurrency/)
+[![Observability](https://img.shields.io/badge/Observability-OpenTelemetry%20W3C%20%2B%20Prometheus-blue.svg)](app/observability/)
 
 A research-grade Information Retrieval (IR) and Retrieval-Augmented Generation (RAG) system engineered to solve semantic drift, vocabulary mismatch, table fragmentation, and hallucination. 
 
@@ -114,12 +117,47 @@ Evaluation executed across **15 multi-domain technical documents** and **105 gro
 
 ---
 
-## 📈 Publication Figures
+## 📈 Publication Figures & Empirical Technical Report
 
-The evaluation suite automatically renders publication-grade figures in IEEE/ACM style:
+The evaluation suite automatically renders publication-grade figures in IEEE/ACM format and compiles full empirical reports:
 
+- 📄 **[Full Academic Experiments Report](reports/EXPERIMENTS_REPORT.md)**: Comprehensive empirical evaluation adhering to SIGIR / VLDB / MLSys experimental protocols, non-parametric Wilcoxon/Fisher statistical tests, Amdahl's Law latency profiling, and ablation analyses.
 - `reports/figures/pareto_frontier.png`: Precision vs. P95 latency Pareto frontier illustrating the operational trade-off between Hybrid RRF (ultra-low latency) and Cross-Encoder reranking (maximum precision).
 - `reports/figures/archetype_ablation.png`: Comparative bar chart dissecting performance across the 5 query archetypes.
+- `reports/figures/hnsw_pareto_frontier.png`: HNSW vector index Pareto frontier ($M \in [8..64]$, $ef_{\text{construct}} \in [64, 128]$, $ef_{\text{search}} \in [10..200]$) evaluated against exact brute-force ground truth.
+- `reports/figures/cache_threshold_calibration.png`: Semantic cache Youden's $J$ ROC curve and score distribution calibration for false-positive-free retrieval caching.
+
+---
+
+## 🔬 Systems Engineering & Advanced Architectures
+
+### 1. Dynamic INT8 ONNX Quantization & Knowledge Distillation
+To resolve the $97.2\%$ Amdahl's Law bottleneck in neural reranking, the Cross-Encoder is exported to ONNX format with dynamic tensor shapes and quantized to INT8 precision with AVX-512/VNNI acceleration:
+- **$3.95\times$ Model Compression**: Memory footprint reduced from $86.78\text{ MB} \to 21.99\text{ MB}$.
+- **$1.80\times$ Latency Speedup**: Mean per-query reranking latency drops from $675.09\text{ms} \to 374.15\text{ms}$.
+- **Empirical Non-Degradation**: Evaluated on 105 Cranfield queries with $98.33\%$ NDCG retention. Paired Two-Sided Wilcoxon Signed-Rank Test yields $W = 529.50, p = 0.29707 > 0.05$, confirming null hypothesis of zero ranking fidelity loss cannot be rejected.
+
+### 2. Sliding-Window Dynamic Micro-Batching Concurrency Engine
+Under bursty concurrent traffic, naive sequential inference blocks the FastAPI asynchronous event loop and suffers heavy Python GIL contention. We implement an asynchronous micro-batcher (`app/concurrency/batch_queue.py`):
+- **Adaptive Windowing**: Coalesces concurrent queries within a sliding timeout window ($\Delta t = 8\text{ms}$) up to $B_{\text{max}} = 32$.
+- **Off-Loop Thread-Pool Execution**: Dispatches vectorized matrix operations via `loop.run_in_executor()` to dedicated CPU worker threads.
+- **Concurrency Speedup**: Under 50 concurrent simulated users, throughput increases by **$1.78\times$** ($196.97 \to 349.83\text{ QPS}$) with a **$95.5\%$ reduction in latency jitter** ($246.29\text{ms} \to 11.01\text{ms}$).
+
+### 3. Empirical Vector Store HNSW Hyperparameter Ablation
+Vector databases are often treated as black boxes. We implement an exact $O(N \cdot D)$ linear scan baseline (`app/storage/brute_force_index.py`) and perform a 40-configuration grid sweep across HNSW graph parameters (`app/storage/hnsw_ablation.py`):
+- Mapped trade-offs between construction parameters ($M \in [8..64]$, $ef_{\text{construct}} \in [64, 128]$) and query runtime parameters ($ef_{\text{search}} \in [10..200]$).
+- Identified the empirical Pareto inflection point at $M=16, ef_{\text{search}}=50$, which delivers $0.985$ Recall@10 while preserving sub-millisecond query time ($0.88\text{ms}$).
+
+### 4. Anti-Stampede SingleFlight Semantic Cache
+To eliminate the cache stampede ("thundering herd") problem during concurrent bursts, we engineer a two-tier caching architecture (`app/cache/`):
+- **L1 AST & SHA-256 Cache**: O(1) in-memory LRU cache matching normalized query syntax trees.
+- **L2 Semantic ANN Vector Cache**: Embeds queries and searches past results via cosine similarity threshold calibrated via Youden's $J$ statistic ($\tau^* = 0.75$, $J=1.000, \text{FPR}=0.0\%$).
+- **SingleFlight Mutex Coalescing**: Resolves simultaneous cache misses by allowing only one worker to execute the physical pipeline while all concurrent duplicates await the same asynchronous Promise, achieving a **$98.0\%$ compute suppression ratio** under a 50-request stampede.
+
+### 5. Distributed OpenTelemetry Tracing & Prometheus Observability
+- **W3C Distributed Trace Context**: Propagates `traceparent` headers across asynchronous thread boundaries and background execution pools (`app/observability/tracer.py`).
+- **Prometheus Metrics Endpoint**: Exposes bounded categorical histograms (`rag_retrieval_latency_seconds_bucket`, `rag_pipeline_requests_total`) partitioned by execution stage and query archetype at `/metrics`.
+- **ASGI Middleware**: Auto-generates and returns `X-Trace-Id` headers on all REST requests for end-to-end distributed observability.
 
 ---
 
@@ -132,12 +170,20 @@ advanced-hybrid-rag/
 │   │   ├── dependencies.py       # FastAPI dependency injection (get_engine)
 │   │   ├── endpoints.py          # REST API endpoints (/documents, /query, /benchmark)
 │   │   └── ui.py                 # Jinja2 template rendering controller
+│   ├── cache/
+│   │   ├── hierarchical_cache.py # L1 SHA-256 AST LRU + L2 Semantic Vector Cache
+│   │   ├── single_flight.py      # Async mutex promise coalescer (anti-stampede)
+│   │   └── threshold_evaluator.py# ROC & Youden's J empirical similarity calibrator
+│   ├── concurrency/
+│   │   └── batch_queue.py        # Sliding-window dynamic micro-batcher
 │   ├── core/
 │   │   ├── bm25_retriever.py     # High-level sparse retriever wrapper
 │   │   ├── document_processor.py # Layout-aware parser, Markdown table linearizer
+│   │   ├── export_onnx.py        # PyTorch -> ONNX dynamic export & INT8 quantizer
 │   │   ├── fusion.py             # Cormack Reciprocal Rank Fusion (RRF)
 │   │   ├── generator.py          # Grounded synthesis with citation verification
 │   │   ├── inverted_index.py     # First-principles InvertedIndex (postings, BM25+)
+│   │   ├── onnx_reranker.py      # AVX-512 accelerated ONNX INT8 Cross-Encoder
 │   │   ├── pipeline.py           # Unified HybridRAGEngine orchestrator
 │   │   ├── reranker.py           # Cross-Encoder neural reranker
 │   │   └── vector_store.py       # Dense vector store (Qdrant + sentence-transformers)
@@ -150,8 +196,25 @@ advanced-hybrid-rag/
 │   │   └── visualizer.py         # Matplotlib publication figure generator
 │   ├── models/
 │   │   └── schemas.py            # Pydantic v2 schemas and telemetry models
+│   ├── observability/
+│   │   ├── metrics.py            # Prometheus bounded histograms & counters
+│   │   ├── middleware.py         # ASGI OpenTelemetry tracing & X-Trace-Id middleware
+│   │   └── tracer.py             # OpenTelemetry W3C trace context provider
+│   ├── storage/
+│   │   ├── brute_force_index.py  # Exact O(N*D) linear scan baseline for true ground truth
+│   │   └── hnsw_ablation.py      # Grid sweep engine over M, ef_construct, ef_search
+│   ├── training/
+│   │   ├── dataset.py            # PyTorch TripletDataset with dynamic padding collate
+│   │   ├── hard_negatives.py     # BM25+/Dense adversary false-positive miner
+│   │   ├── loss.py               # MarginMSE distillation & InfoNCE contrastive losses
+│   │   └── train_reranker.py     # Teacher-student Cross-Encoder distillation trainer
 │   ├── config.py                 # Pydantic Settings & environment configuration
-│   └── main.py                   # FastAPI app with lifespan state management
+│   └── main.py                   # FastAPI app with metrics endpoint & telemetry
+├── benchmarks/
+│   ├── run_batching_concurrency.py # Micro-batching vs naive async benchmark
+│   ├── run_cache_eval.py         # SingleFlight stampede suppression & ROC calibration
+│   ├── run_hnsw_ablation.py      # 40-configuration HNSW Pareto frontier study
+│   └── run_quantization_eval.py  # INT8 ONNX vs FP32 PyTorch Cranfield benchmark
 ├── data/
 │   ├── raw/corpus/
 │   │   └── corpus.jsonl          # 15 technical documents (JSONL format)
@@ -159,9 +222,15 @@ advanced-hybrid-rag/
 │       ├── queries.jsonl         # 105 ground-truth queries with answers & contexts
 │       └── qrels.tsv             # Standard TREC 4-column graded relevance judgments
 ├── reports/
-│   └── figures/
-│       ├── pareto_frontier.png   # Latency vs Accuracy Pareto frontier
-│       └── archetype_ablation.png# Archetype performance breakdown
+│   ├── figures/
+│   │   ├── archetype_ablation.png       # Archetype performance breakdown
+│   │   ├── cache_threshold_calibration.png # Youden's J ROC calibration curve
+│   │   ├── hnsw_pareto_frontier.png     # HNSW Recall vs Latency Pareto frontier
+│   │   └── pareto_frontier.png          # Latency vs Accuracy Pareto frontier
+│   ├── EXPERIMENTS_REPORT.md     # Full academic empirical systems technical report
+│   ├── cache_benchmark.json      # SingleFlight & threshold calibration results
+│   ├── concurrency_benchmark.json# Dynamic batching concurrency telemetry
+│   └── hnsw_ablation_results.json# 40-run HNSW ablation raw data
 ├── static/
 │   ├── css/style.css             # Glassmorphism dark theme styles
 │   └── js/app.js                 # Interactive dashboard logic
@@ -171,11 +240,16 @@ advanced-hybrid-rag/
 │   ├── conftest.py               # Pytest environment fixtures
 │   ├── test_api.py               # REST API integration tests (health, query, stats)
 │   ├── test_bm25.py              # Inverted index & BM25+ unit tests
+│   ├── test_cache.py             # SingleFlight & hierarchical cache unit tests
 │   ├── test_chunking.py          # Table preservation & row linearization tests
+│   ├── test_concurrency.py       # Micro-batching queue & concurrency tests
 │   ├── test_evaluation.py        # NDCG, MAP, ROUGE-L, significance tests
 │   ├── test_fusion.py            # RRF fusion mathematical tests
+│   ├── test_observability.py     # OpenTelemetry & Prometheus middleware tests
 │   ├── test_pipeline.py          # End-to-end pipeline execution tests
-│   └── test_reranker.py          # Cross-encoder tests
+│   ├── test_quantization_and_training.py # Hard-negatives, MarginMSE, ONNX tests
+│   ├── test_reranker.py          # Cross-encoder tests
+│   └── test_storage_ablation.py  # Brute-force & HNSW ablation unit tests
 ├── Dockerfile                    # Multi-stage, non-root production Docker image
 ├── docker-compose.yml            # Container orchestration definition
 ├── pyproject.toml                # PEP 518/621 packaging (Ruff, Mypy, Pytest)

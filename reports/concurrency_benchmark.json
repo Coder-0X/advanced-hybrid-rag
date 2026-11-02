@@ -1,0 +1,31 @@
+{
+  "num_requests": 50,
+  "serial": {
+    "total_time_sec": 0.2538485999975819,
+    "qps": 196.9677989182382,
+    "mean_latency_ms": 4.993109998758882,
+    "p50_latency_ms": 4.955099997459911,
+    "p95_latency_ms": 5.819064991374034,
+    "p99_latency_ms": 6.861777006124608,
+    "event_loop_lag_p95_ms": 246.28589998348616
+  },
+  "dynamic_microbatch": {
+    "total_time_sec": 0.14292729998123832,
+    "qps": 349.82819941720976,
+    "mean_latency_ms": 110.36742200085428,
+    "p50_latency_ms": 92.8386000014143,
+    "p95_latency_ms": 141.56507499865256,
+    "p99_latency_ms": 141.56590400496498,
+    "event_loop_lag_p95_ms": 11.008330005570313,
+    "batcher_stats": {
+      "total_batches_executed": 2,
+      "total_queries_processed": 50,
+      "avg_batch_utilization": 25.0,
+      "queue_pending_items": 0,
+      "max_batch_size": 32,
+      "window_ms": 8.0
+    }
+  },
+  "throughput_speedup_x": 1.776067973234672,
+  "p99_latency_reduction_pct": -1963.1084903897001
+}

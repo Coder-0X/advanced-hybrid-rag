@@ -102,7 +102,7 @@ def test_benchmark_runner_integration():
             target_document_id="doc_k8s_autoscaling"
         )
     ]
-    report = runner.run_benchmark(dataset=test_dataset, top_k=3, generate_plots=False)
+    report = runner.run_benchmark(dataset=test_dataset, top_k=3, generate_plots=False, save_report=False)
     assert report.sample_count == 1
     assert report.summary.naive.faithfulness >= 0.0
     assert report.summary.hybrid.hit_rate >= 0.0

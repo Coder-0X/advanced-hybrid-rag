@@ -1,7 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 from pathlib import Path
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, Response
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -10,6 +10,8 @@ from app.api.ui import ui_router
 from app.core.pipeline import HybridRAGEngine
 from app.evaluation.dataset import DEFAULT_CORPUS
 from app.config import settings
+from app.observability.middleware import OpenTelemetryMiddleware
+from app.observability.metrics import get_prometheus_metrics
 
 # Setup logging
 logging.basicConfig(
@@ -46,6 +48,9 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+# Enable Distributed Tracing and Metrics
+app.add_middleware(OpenTelemetryMiddleware)
+
 # Enable CORS for browser access
 app.add_middleware(
     CORSMiddleware,
@@ -75,6 +80,12 @@ def health_check(request: Request):
         "version": "1.1.0",
         "indexed_chunks": indexed_chunks
     }
+
+@app.get("/metrics", tags=["Observability"])
+def prometheus_metrics():
+    """Exposes native Prometheus metrics for scraping."""
+    content, content_type = get_prometheus_metrics()
+    return Response(content=content, media_type=content_type)
 
 if __name__ == "__main__":
     import uvicorn

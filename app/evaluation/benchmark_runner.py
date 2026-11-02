@@ -49,7 +49,8 @@ class AutomatedBenchmarkRunner:
         self,
         dataset: Optional[List[BenchmarkDatasetItem]] = None,
         top_k: int = 5,
-        generate_plots: bool = True
+        generate_plots: bool = True,
+        save_report: bool = True
     ) -> BenchmarkReport:
         """
         Execute benchmark across all three retrieval modes on the dataset.
@@ -256,7 +257,8 @@ class AutomatedBenchmarkRunner:
         )
 
         # Persist report
-        self._save_report(report)
+        if save_report:
+            self._save_report(report)
 
         # Generate publication plots
         if generate_plots:
